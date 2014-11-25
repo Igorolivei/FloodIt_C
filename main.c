@@ -38,7 +38,7 @@ int main()
     
     //Mensagem Inicial
     system ("cls");
-    printf("Bem vindo ao FLOOD IT!\nPara jogar, basta digitar um número de 0 à 5.\nE imundar todo tabuleiro com apenas um número em até 25 jogadas.\nBoa sorte!!!\n(q: Sair do jogo. s: Salvar jogo. o: Ler jogo salvo.)\n\n\n");
+    printf("Bem vindo ao FLOOD IT!\nPara jogar, basta digitar um número de 0 à 5.\nE imundar todo tabuleiro com apenas um número em até 25 jogadas.\nBoa sorte!!!\n(z: Desfazer última jogada. q: Sair do jogo. s: Salvar jogo. o: Ler jogo salvo.)\n\n\n");
     printf("Você ainda tem 25 jogadas\n\n");
     
     /*if((pf = fopen("maior_pontuacao.bin", "wb")) == NULL) 
