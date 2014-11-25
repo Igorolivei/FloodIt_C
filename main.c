@@ -32,7 +32,7 @@ int main()
     int i,j, velha_cor, desfazer = 0;
     int x;
     char nova_cor[0], salvar, ler;
-    int jogadas = 0, terminou = 0;
+    int jogadas = 0, terminou = 0, maior_pontuacao = 0;
     int tabuleiro[14][14], undo[14][14];
     FILE *pf;
     
@@ -41,10 +41,25 @@ int main()
     printf("Bem vindo ao FLOOD IT!\nPara jogar, basta digitar um número de 0 à 5.\nE imundar todo tabuleiro com apenas um número em até 25 jogadas.\nBoa sorte!!!\n(q: Sair do jogo. s: Salvar jogo. o: Ler jogo salvo.)\n\n\n");
     printf("Você ainda tem 25 jogadas\n\n");
     
+    /*if((pf = fopen("maior_pontuacao.bin", "wb")) == NULL) 
+        {
+            printf("Erro na abertura do arquivo");
+            exit(1);    
+        }
+    //Verifica se a pontuação atual é maior que a máxima
+    if(fread(&maior_pontuacao, sizeof(int), 1,pf) != 1)
+    {
+        printf("Erro na leitura da maior pontuação\n\n");
+    }
+    else
+    {
+        printf("Alguém terminou faltando %i jogadas. Você faz melhor?\n\n", maior_pontuacao);
+    }
+    fclose(pf);*/
+
     //Carrega o inicio do jogo, buscando lá do myjogo.h
     comeco();
-    
-    //Abre o arquivo que o jogo tava salvo e preenche o tabuleiro
+
     if((pf = fopen("arquivo.bin", "rb")) == NULL) 
     {
         printf("Erro na abertura do arquivo");
@@ -57,7 +72,7 @@ int main()
         {
             if(fread(&tabuleiro[i][j], sizeof(int), 1,pf) != 1)
             {
-                printf("Erro na escrita do arquivo");
+                printf("Erro na leitura do arquivo");
                 
                  undo[i][j] = tabuleiro[i][j];
             }
@@ -86,9 +101,13 @@ int main()
                     {
                         printf("%i", undo[i][j]);
                         if(j < 13 )
+                        {
                             printf( " " );
+                        }    
                         else
+                        {
                             printf( "\n" );
+                        }    
                     }
                 }
                desfazer ++; 
@@ -141,6 +160,43 @@ int main()
 		if(ler == 's')
 		{
 			//fazer a leitura do arquivo salvo
+            FILE *pf;
+            int i, j;
+            
+            if((pf = fopen("jogo_salvo.bin", "rb")) == NULL) 
+            {
+                printf("Erro na abertura do arquivo");
+                exit(1);
+            }
+            
+            for( i = 0; i < 14; ++i )
+            {
+                for( j = 0; j < 14; ++j )
+                {
+                    if(fread(&tabuleiro[i][j], sizeof(int), 1,pf) != 1)
+                    {
+                        printf("Erro na leitura do arquivo");
+                    }
+                    else
+                    {
+                        printf("%i", tabuleiro[i][j]);
+                        if(j < 13 )
+                        {
+                            printf( " " );
+                        }
+                        else
+                        {
+                            printf( "\n" );
+                        }
+                    }
+                }
+            }
+            if(fread(&jogadas, sizeof(int), 1,pf) != 1)
+            {
+                printf("Erro na escrita do arquivo");
+            }        
+
+            fclose(pf);
 			printf("deu certo");
 		}
 	}
@@ -176,9 +232,13 @@ int main()
                 {
                     printf("%i", tabuleiro[i][j]);
                     if(j < 13 )
+                    {
                         printf( " " );
+                    }
                     else
+                    {
                         printf( "\n" );
+                    }    
 
                     if(tabuleiro[0][0] == tabuleiro[i][j])
                     {
@@ -193,7 +253,24 @@ int main()
     //Ver como o jogo terminou;
     if(terminou == 196)
     {
+        FILE *pf;
+
         printf("Parabéns!!! Vc é o novo ganhador\n");
+        //Lê o arquivo que contém a pontuação máxima
+        /*if((pf = fopen("maior_pontuacao.bin", "wb")) == NULL) 
+        {
+            printf("Erro na abertura do arquivo");
+            exit(1);    
+        }
+        //Se for, escreve
+        if (jogadas > maior_pontuacao)
+        {
+            if(fwrite(&jogadas, sizeof(int), 1,pf) != 1)
+            {
+                printf("Erro na escrita do arquivo");
+            }
+        }
+        fclose(pf);*/
     }
     if(terminou != 196 && jogadas >=25)
     {
@@ -223,16 +300,20 @@ int main()
                 for( j = 0; j < 14; ++j)
                 {
                     if(fwrite(&tabuleiro[i][j], sizeof(int), 1,pf) != 1)
-                    printf("Erro na escrita do arquivo");
+                    {
+                        printf("Erro na escrita do arquivo");
+                    }
                 }
             }
             if(fwrite(&jogadas, sizeof(int), 1,pf) != 1)
-                    printf("Erro na escrita do arquivo");
+            {
+                printf("Erro na escrita do arquivo");
+            }
             fclose(pf);
             
             printf("Salvo com sucesso\n");
         }
     }
-    system("pause");
+    getchar();
     return 0;
 }
