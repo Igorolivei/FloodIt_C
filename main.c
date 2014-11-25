@@ -31,14 +31,14 @@ int main()
     //Declarando as variáveis
     int i,j, velha_cor, desfazer = 0;
     int x;
-    char nova_cor[0], salvar;
+    char nova_cor[0], salvar, ler;
     int jogadas = 0, terminou = 0;
     int tabuleiro[14][14], undo[14][14];
     FILE *pf;
     
     //Mensagem Inicial
     system ("cls");
-    printf("Bem vindo ao FLOOD IT!\nPara jogar, basta digitar um número de 0 à 5.\nE imundar todo tabuleiro com apenas um número em até 25 jogadas.\nBoa sorte!!!\n\n");
+    printf("Bem vindo ao FLOOD IT!\nPara jogar, basta digitar um número de 0 à 5.\nE imundar todo tabuleiro com apenas um número em até 25 jogadas.\nBoa sorte!!!\n(q: Sair do jogo. s: Salvar jogo. o: Ler jogo salvo.)\n\n\n");
     printf("Você ainda tem 25 jogadas\n\n");
     
     //Carrega o inicio do jogo, buscando lá do myjogo.h
@@ -99,6 +99,52 @@ int main()
             }
         }
         
+	if(nova_cor[0]== 's')
+	{
+		printf("Deseja salvar o jogo?\n");
+		scanf("%c",&salvar);
+		
+		//se quer salvar, o programa grava um arquivo com o tabuleiro e a qtd de jogadas;
+		if(salvar == 's')
+		{
+		    FILE *pf;
+		    int i, j;
+	    
+		    if((pf = fopen("jogo_salvo.bin", "wb")) == NULL) 
+		    {
+		        printf("Erro na abertura do arquivo");
+		        exit(1);    
+		    }
+	    
+		    for( i = 0; i < 14; ++i)
+		    {
+		        for( j = 0; j < 14; ++j)
+		        {
+		            if(fwrite(&tabuleiro[i][j], sizeof(int), 1,pf) != 1)
+		            printf("Erro na escrita do arquivo");
+		        }
+		    }
+		    if(fwrite(&jogadas, sizeof(int), 1,pf) != 1)
+		            printf("Erro na escrita do arquivo");
+		    fclose(pf);
+		    
+		    printf("Salvo com sucesso\n");
+		}
+	}
+
+	if(nova_cor[0]== 'o')
+	{
+		printf("Deseja ler o último jogo salvo?\n");
+		scanf("%c",&ler);
+		
+		//se quer ler, o programa lê o arquivo com o tabuleiro e a qtd de jogadas;
+		if(ler == 's')
+		{
+			//fazer a leitura do arquivo salvo
+			printf("deu certo");
+		}
+	}
+
         velha_cor = tabuleiro[0][0];
         
         //Testa se o jogador digitou uma cor válida, senão dá outra chance
@@ -140,7 +186,7 @@ int main()
                     }
                 }
             }
-            jogadas++;
+	  jogadas = jogadas + 1;
         }
     }
     
@@ -187,6 +233,6 @@ int main()
             printf("Salvo com sucesso\n");
         }
     }
-	system ("pause");
+    system("pause");
     return 0;
 }
